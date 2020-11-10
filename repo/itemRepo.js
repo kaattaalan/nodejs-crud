@@ -1,6 +1,9 @@
 var Datastore = require('nedb'),
     db = new Datastore({ filename: './repo/itemdatafile', autoload: true });
 
+//enable unique key constraints
+db.ensureIndex({ fieldName: 'id', unique: true })
+
 var findItemById = function(val, callBack) {
     db.find({ id: val }, (err, docs) => callBack(docs))
 }
@@ -8,7 +11,6 @@ var findItemById = function(val, callBack) {
 var findAllItems = function(callBack) {
     db.find({}, (err, docs) => callBack(docs))
 }
-
 
 var addItem = function(body, callBack) {
     db.insert(body, (err, newDoc) => callBack(newDoc))
