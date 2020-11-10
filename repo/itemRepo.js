@@ -1,13 +1,5 @@
-const fs = require('fs');
-let data;
-
-function initModule() {
-    //initialize db by reading file
-    let items = fs.readFileSync('./repo/items.json');
-    data = JSON.parse(items);
-}
-
-initModule();
+var Datastore = require('nedb'),
+    db = new Datastore({ filename: './repo/itemdatafile', autoload: true });
 
 var findItemById = function(id) {
     return data.find(function(item) {
@@ -15,8 +7,10 @@ var findItemById = function(id) {
     });
 }
 
-var findAllItems = function() {
-    return data;
+var findAllItems = function(callBack) {
+    db.find({}, (err, docs) => {
+        callBack(docs)
+    })
 }
 
 var checkIfIdExists = function(id) {
