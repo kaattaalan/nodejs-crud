@@ -15,30 +15,18 @@ router.get('/', function(req, res) {
 
 //find by ID
 router.get('/:id', function(req, res) {
-
-    let found = itemRepo.findItemById(req.params.id)
-
-    if (found) {
-        res.status(200).json(found);
-    } else {
-        res.sendStatus(404);
-    }
+    itemRepo.findItemById(req.params.id, (docs) => res.status(200).json(docs))
 });
 
 //Insert
 router.post('/', function(req, res) {
-    var newItem = itemRepo.addItem(req.body.title);
-    res.status(201).json(newItem);
+    itemRepo.addItem(req.body, (newDoc) => res.status(201).json(newDoc))
 });
 
 //update
 router.put('/', function(req, res) {
-    if (itemRepo.checkIfIdExists(req.body.id)) {
-        itemRepo.updateItem(req.body);
-        res.sendStatus(204);
-    } else {
-        res.sendStatus(404);
-    }
+    itemRepo.updateItem(req.body);
+    res.sendStatus(204);
 });
 
 //delete

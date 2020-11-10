@@ -4,7 +4,8 @@
     "description": "CRUD ops",
     "main": "server.js",
     "scripts": {
-        "dev": "nodemon server.js"
+        "dev": "nodemon server.js",
+        "build": "node server.js"
     },
     "author": "kaattaalan",
     "license": "ISC",
