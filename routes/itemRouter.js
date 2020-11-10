@@ -10,7 +10,7 @@ router.use(express.urlencoded({ extended: true }));
 
 //get all
 router.get('/', function(req, res) {
-    res.status(200).json(itemRepo.findAllItems());
+    itemRepo.findAllItems((docs) => res.status(200).json(docs))
 });
 
 //find by ID
