@@ -10,44 +10,36 @@ router.use(express.urlencoded({ extended: true }));
 
 //get all
 router.get('/', function(req, res) {
-    res.status(200).json(itemRepo.findAllItems());
+    itemRepo.findAllItems((docs) => res.status(200).json(docs))
 });
 
 //find by ID
 router.get('/:id', function(req, res) {
-
-    let found = itemRepo.findItemById(req.params.id)
-
-    if (found) {
-        res.status(200).json(found);
-    } else {
-        res.sendStatus(404);
-    }
+    itemRepo.findItemById(parseInt(req.params.id), (docs) => {
+        res.status(200).json(docs)
+    })
 });
 
 //Insert
 router.post('/', function(req, res) {
-    var newItem = itemRepo.addItem(req.body.title);
-    res.status(201).json(newItem);
+    itemRepo.addItem(req.body, (err, newDoc) => {
+        if (err) {
+            res.status(500).send(err)
+        }
+        res.status(201).json(newDoc)
+    })
 });
 
 //update
 router.put('/', function(req, res) {
-    if (itemRepo.checkIfIdExists(req.body.id)) {
-        itemRepo.updateItem(req.body);
-        res.sendStatus(204);
-    } else {
-        res.sendStatus(404);
-    }
+    itemRepo.updateItem(req.body, (err, doc) => {
+        res.sendStatus(204)
+    })
 });
 
 //delete
 router.delete('/', function(req, res) {
-    if (itemRepo.deleteItem(req.params.id)) {
-        res.sendStatus(204);
-    } else {
-        res.sendStatus(404);
-    }
+    itemRepo.deleteItem(req.body.id, (err, numRemoved) => res.sendStatus(204))
 })
 
 module.exports = router;
