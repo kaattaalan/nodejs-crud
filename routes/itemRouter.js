@@ -15,26 +15,36 @@ router.get('/', function(req, res) {
 
 //find by ID
 router.get('/:id', function(req, res) {
-    itemRepo.findItemById(req.params.id, (docs) => res.status(200).json(docs))
+    itemRepo.findItemById(req.params.id, (docs) => {
+        res.status(200).json(docs)
+    })
 });
 
 //Insert
 router.post('/', function(req, res) {
-    itemRepo.addItem(req.body, (newDoc) => res.status(201).json(newDoc))
+    itemRepo.addItem(req.body, (err, newDoc) => {
+        if (err) {
+            res.status(500).send(err)
+        }
+        res.status(201).json(newDoc)
+    })
 });
 
 //update
 router.put('/', function(req, res) {
-    itemRepo.updateItem(req.body);
-    res.sendStatus(204);
+    itemRepo.updateItem(req.body, (err, doc) => {
+        res.sendStatus(204)
+    })
 });
 
 //delete
 router.delete('/', function(req, res) {
-    if (itemRepo.deleteItem(req.params.id)) {
-        res.sendStatus(204);
-    } else {
-        res.sendStatus(404);
+    itemRepo.deleteItem(req.params.id), (err, numRemoved) => {
+        if (err) {
+            res.status(204).send(numRemoved);
+        } else {
+            res.sendStatus(404);
+        }
     }
 })
 

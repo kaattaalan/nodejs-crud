@@ -13,32 +13,15 @@ var findAllItems = function(callBack) {
 }
 
 var addItem = function(body, callBack) {
-    db.insert(body, (err, newDoc) => callBack(newDoc))
+    db.insert(body, (err, newDoc) => callBack(err, newDoc))
 }
 
-
-var updateItem = (itemJson) => {
-    let updated = {
-        id: itemJson.id,
-        title: itemJson.title,
-        order: itemJson.order,
-        completed: itemJson.completed,
-        createdOn: itemJson.createdOn
-    };
-    let targetIndex = data.indexOf(itemJson.id);
-    data.splice(targetIndex, 1, updated);
+var updateItem = (item, callBack) => {
+    db.update({ id: item.id }, item, { upsert: true }, (err, numReplaced, upsert) => callBack(err, numReplaced))
 }
 
-var deleteItem = (id) => {
-
-    let found = data.find(function(item) {
-        return item.id === parseInt(id);
-    });
-    if (found) {
-        let targetIndex = data.indexOf(found);
-        data.splice(targetIndex, 1);
-    }
-    return found;
+var deleteItem = (idVal, callback) => {
+    db.remove({ id: idVal }, { multi: true }, (err, numRemoved) => callback(err, numRemoved))
 }
 
 module.exports = {
