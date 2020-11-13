@@ -15,7 +15,7 @@ router.get('/', function(req, res) {
 
 //find by ID
 router.get('/:id', function(req, res) {
-    itemRepo.findItemById(req.params.id, (docs) => {
+    itemRepo.findItemById(parseInt(req.params.id), (docs) => {
         res.status(200).json(docs)
     })
 });
@@ -39,13 +39,7 @@ router.put('/', function(req, res) {
 
 //delete
 router.delete('/', function(req, res) {
-    itemRepo.deleteItem(req.params.id), (err, numRemoved) => {
-        if (err) {
-            res.status(204).send(numRemoved);
-        } else {
-            res.sendStatus(404);
-        }
-    }
+    itemRepo.deleteItem(req.body.id, (err, numRemoved) => res.sendStatus(204))
 })
 
 module.exports = router;

@@ -20,8 +20,8 @@ var updateItem = (item, callBack) => {
     db.update({ id: item.id }, item, { upsert: true }, (err, numReplaced, upsert) => callBack(err, numReplaced))
 }
 
-var deleteItem = (idVal, callback) => {
-    db.remove({ id: idVal }, { multi: true }, (err, numRemoved) => callback(err, numRemoved))
+var deleteItem = (idVal, callBack) => {
+    db.remove({ id: idVal }, {}, (err, numRemoved) => callBack(err, numRemoved))
 }
 
 module.exports = {
