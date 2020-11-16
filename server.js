@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
 app.use('/items', itemsRouter);
 
 
-const port = 3000;
-app.listen(3000, function() {
+const port = 3001;
+app.listen(port, function() {
     console.debug('Server listening on port ' + port);
 });
