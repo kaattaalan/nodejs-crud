@@ -1,9 +1,10 @@
-const itemsRouter = require('./routes/itemRouter');
+const itemsRouter = require('./routes/itemRouter'),
+    express = require('express'),
+    morgan = require('morgan'),
+    app = express();
 
-const express = require('express');
-const app = express();
-
-
+//morgan for logging
+app.use(morgan('dev'));
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
