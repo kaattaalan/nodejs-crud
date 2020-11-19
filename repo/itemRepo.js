@@ -1,8 +1,11 @@
 const Datastore = require('nedb'),
-    db = new Datastore({ filename: './repo/itemdatafile', autoload: true });
+    db = new Datastore({ filename: './repo/itemdatafile', autoload: true }),
+    crypto = require('crypto');
+
+db.ensureIndex({ fieldName: 'id', unique: true })
 
 const findItemById = function(val, callBack) {
-    db.findOne({ _id: val }, (err, docs) => callBack(docs))
+    db.findOne({ id: val }, (err, docs) => callBack(docs))
 }
 
 const findAllItems = function(callBack) {
@@ -10,15 +13,16 @@ const findAllItems = function(callBack) {
 }
 
 const addItem = function(body, callBack) {
+    body.id = crypto.randomBytes(16).toString("base64");
     db.insert(body, (err, newDoc) => callBack(err, newDoc))
 }
 
 const updateItem = (item, callBack) => {
-    db.update({ _id: item.id }, item, { upsert: true }, (err, numReplaced, upsert) => callBack(err, numReplaced))
+    db.update({ id: item.id }, item, { upsert: true }, (err, numReplaced, upsert) => callBack(err, numReplaced))
 }
 
 const deleteItem = (idVal, callBack) => {
-    db.remove({ _id: idVal }, {}, (err, numRemoved) => callBack(err, numRemoved))
+    db.remove({ id: idVal }, {}, (err, numRemoved) => callBack(err, numRemoved))
 }
 
 const deleteAll = (callBack) => {
