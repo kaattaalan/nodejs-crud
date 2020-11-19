@@ -13,7 +13,7 @@ const findAllItems = function(callBack) {
 }
 
 const addItem = function(body, callBack) {
-    body.id = crypto.randomBytes(16).toString("base64");
+    body.id = crypto.randomBytes(16).toString("hex");
     db.insert(body, (err, newDoc) => callBack(err, newDoc))
 }
 
