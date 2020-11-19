@@ -24,9 +24,11 @@ router.get('/:id', function(req, res) {
 router.post('/', function(req, res) {
     itemRepo.addItem(req.body, (err, newDoc) => {
         if (err) {
+            console.log(err.errorType)
             res.status(500).send(err)
+        } else {
+            res.status(201).json(newDoc)
         }
-        res.status(201).json(newDoc)
     })
 });
 
