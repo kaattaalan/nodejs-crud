@@ -10,7 +10,6 @@ module.exports = {
                 next(err);
             else
                 res.json({ status: "success", message: "User added successfully!!!", data: { name: result.name, email: result.email } });
-
         });
     },
     authenticate: function(req, res, next) {
@@ -18,11 +17,11 @@ module.exports = {
             if (err) {
                 next(err);
             } else {
-                if (bcrypt.compareSync(req.body.password, userInfo.password)) {
+                if (userInfo && bcrypt.compareSync(req.body.password, userInfo.password)) {
                     const token = jwt.sign({ id: userInfo._id }, req.app.get('secretKey'), { expiresIn: '1h' });
-                    res.json({ status: "success", message: "user found!!!", data: { user: userInfo, token: token } });
+                    res.status(200).json({ status: "success", message: "user found!!!", data: { user: userInfo, token: token } });
                 } else {
-                    res.json({ status: "error", message: "Invalid email/password!!!", data: null });
+                    res.status(400).json({ status: "error", message: "Invalid email/password!!!", data: null });
                 }
             }
         });
