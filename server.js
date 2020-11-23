@@ -3,7 +3,10 @@ const itemsRouter = require('./routes/itemRouter'),
     express = require('express'),
     morgan = require('morgan'),
     app = express(),
-    jwt = require('jsonwebtoken');;
+    jwt = require('jsonwebtoken');
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //morgan for logging
 app.use(morgan('dev'));
@@ -24,7 +27,7 @@ function validateUser(req, res, next) {
             res.status(401).json({ status: "Unauthorized", message: err.message, data: null });
         } else {
             // add user id to request
-            //req.body.userId = decoded.id;
+            req.body.userId = decoded.id;
             next();
         }
     });
