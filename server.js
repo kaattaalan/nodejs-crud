@@ -1,18 +1,41 @@
-const itemsRouter = require('./routes/itemRouter');
+const itemsRouter = require('./routes/itemRouter'),
+    userRouter = require('./routes/userRouter'),
+    express = require('express'),
+    morgan = require('morgan'),
+    app = express(),
+    jwt = require('jsonwebtoken');
 
-const express = require('express');
-const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-
+//morgan for logging
+app.use(morgan('dev'));
+app.set('secretKey', 'nodeRestApi');
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
-app.use('/items', itemsRouter);
+app.use('/user', userRouter);
+
+//Secure Routers
+app.use('/items', validateUser, itemsRouter);
+
+function validateUser(req, res, next) {
+    jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), function(err, decoded) {
+        if (err) {
+            res.status(401).json({ status: "Unauthorized", message: err.message, data: null });
+        } else {
+            // add user id to request
+            req.body.userId = decoded.id;
+            next();
+        }
+    });
+
+}
 
 
-const port = 3000;
-app.listen(3000, function() {
+const port = 3001;
+app.listen(port, function() {
     console.debug('Server listening on port ' + port);
 });

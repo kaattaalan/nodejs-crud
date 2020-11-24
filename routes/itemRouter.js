@@ -15,8 +15,8 @@ router.get('/', function(req, res) {
 
 //find by ID
 router.get('/:id', function(req, res) {
-    itemRepo.findItemById(parseInt(req.params.id), (docs) => {
-        res.status(200).json(docs)
+    itemRepo.findItemById(req.params.id, (doc) => {
+        res.status(200).json(doc)
     })
 });
 
@@ -24,9 +24,11 @@ router.get('/:id', function(req, res) {
 router.post('/', function(req, res) {
     itemRepo.addItem(req.body, (err, newDoc) => {
         if (err) {
+            console.log(err.errorType)
             res.status(500).send(err)
+        } else {
+            res.status(201).json(newDoc)
         }
-        res.status(201).json(newDoc)
     })
 });
 
@@ -38,8 +40,18 @@ router.put('/', function(req, res) {
 });
 
 //delete
+router.delete('/:id', function(req, res) {
+    itemRepo.deleteItem(req.params.id, (err, numRemoved) => res.sendStatus(204))
+})
+
+//deleteAll
 router.delete('/', function(req, res) {
-    itemRepo.deleteItem(req.body.id, (err, numRemoved) => res.sendStatus(204))
+    itemRepo.deleteAll((err, numRemoved) => res.sendStatus(204))
+})
+
+//findByTitle
+router.get('/', (req, res) => {
+    itemRepo.findByTitle(req.query.title, doc => res.status(200).json(doc))
 })
 
 module.exports = router;
