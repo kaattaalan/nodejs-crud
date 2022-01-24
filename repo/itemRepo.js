@@ -4,12 +4,16 @@ const Datastore = require('nedb'),
 
 db.ensureIndex({ fieldName: 'id', unique: true })
 
-const findItemById = function(val, callBack) {
-    db.findOne({ id: val }, (err, docs) => callBack(docs))
-}
-
 const findAllItems = function(callBack) {
     db.find({}, (err, docs) => callBack(docs))
+}
+
+const findOne = (query, callBack) => {
+    db.findOne(query, (err, docs) => callBack(docs))
+}
+
+const searchByQuery = (query, callBack) => {
+    db.find(query, (err, docs) => callBack(docs))
 }
 
 const addItem = function(body, callBack) {
@@ -31,16 +35,12 @@ const deleteAll = (callBack) => {
     })
 }
 
-const findByTitle = (titleVal, callBack) => {
-    db.find({ title: titleVal }, (err, doc) => callBack(doc))
-}
-
 module.exports = {
-    findItemById,
+    findOne,
     findAllItems,
     addItem,
     updateItem,
     deleteItem,
     deleteAll,
-    findByTitle
+    searchByQuery
 }

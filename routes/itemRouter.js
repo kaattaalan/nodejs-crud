@@ -8,16 +8,17 @@ const itemRepo = require('../repo/itemRepo');
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
-//get all
-router.get('/', function(req, res) {
-    itemRepo.findAllItems((docs) => res.status(200).json(docs))
-});
-
-//find by ID
-router.get('/:id', function(req, res) {
-    itemRepo.findItemById(req.params.id, (doc) => {
-        res.status(200).json(doc)
-    })
+//get all / search method
+router.get('/:id?', function(req, res) {
+    if(Object.keys(req.query).length < 1){
+        if(req.params['id']){
+            itemRepo.findOne(req.params, doc => res.status(200).json(doc))
+        }else{
+            itemRepo.findAllItems((docs) => res.status(200).json(docs))
+        }
+    }else {
+        itemRepo.searchByQuery(req.query, doc => res.status(200).json(doc))
+    }
 });
 
 //Insert
@@ -47,11 +48,6 @@ router.delete('/:id', function(req, res) {
 //deleteAll
 router.delete('/', function(req, res) {
     itemRepo.deleteAll((err, numRemoved) => res.sendStatus(204))
-})
-
-//findByTitle
-router.get('/', (req, res) => {
-    itemRepo.findByTitle(req.query.title, doc => res.status(200).json(doc))
 })
 
 module.exports = router;
