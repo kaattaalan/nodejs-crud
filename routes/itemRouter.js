@@ -17,7 +17,12 @@ router.get('/:id?', function(req, res) {
             itemRepo.findAllItems((docs) => res.status(200).json(docs))
         }
     }else {
-        itemRepo.searchByQuery(req.query, doc => res.status(200).json(doc))
+        //query params exists. Convert to nedb query
+        for (const [key, value] of Object.entries(req.query)) {
+            var regexp = new RegExp(value);
+            queryObj = { [key] : { $regex : regexp} };
+        }
+        itemRepo.searchByQuery(queryObj, doc => res.status(200).json(doc))
     }
 });
 
